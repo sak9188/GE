@@ -14,7 +14,24 @@ class GE_Python
 public:
 	PyObject* RegFuncVoid(PyObject* self, PyObject* arg)
 	{
-		Py_RETURN_NONE;
+		return nullptr;
+	}
+
+	GE_PyObject* GetModule(const char * str)
+	{
+		if (!Py_IsInitialized())
+		{
+			std::cout << "Python 没有初始化" << std::endl;
+			return nullptr;
+		}
+		print("载入模块：");
+		print(str);
+		return new GE_PyObject(PyImport_ImportModule(str));
+	}
+
+	~GE_Python()
+	{
+		Py_Finalize();
 	}
 
 private:
@@ -25,21 +42,14 @@ private:
 		std::wstringstream ss;
 		ss << "..\\..\\python\\DLLs\\;"
 			<< "..\\..\\python\\Lib\\python38.zip;"
-			<< "..\\..\\python\\pkgs\\;";
+			<< "..\\..\\python\\pkgs\\;"
+			<< ".\\";
 		Py_SetPath(ss.str().c_str());
 		Py_Initialize();
+		print("初始化完成");
 	}
 
-	GE_PyObject* GetModule(const char * str)
-	{
-		if (!Py_IsInitialized)
-		{
-			std::cout << "Python 没有初始化" << std::endl;
-			return nullptr;
-		}
 
-		return new GE_PyObject(PyImport_ImportModule(str));
-	}
 };
 
 SET_SINGLETON(GE_Python)
