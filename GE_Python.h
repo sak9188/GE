@@ -35,15 +35,22 @@ public:
 	}
 
 private:
-	SINGLETON(GE_Python)
+	GE_SINGLETON(GE_Python)
 
 	void Init()
 	{
 		std::wstringstream ss;
+#ifdef _DEBUG
+		ss << "..\\python\\DLLs\\;"
+			<< "..\\python\\Lib\\python38.zip;"
+			<< "..\\python\\pkgs\\;"
+			<< ".\\";
+#else
 		ss << "..\\..\\python\\DLLs\\;"
 			<< "..\\..\\python\\Lib\\python38.zip;"
 			<< "..\\..\\python\\pkgs\\;"
 			<< ".\\";
+#endif
 		Py_SetPath(ss.str().c_str());
 		Py_Initialize();
 		print("初始化完成");
@@ -52,4 +59,4 @@ private:
 
 };
 
-SET_SINGLETON(GE_Python)
+GE_SET_SINGLETON(GE_Python)
