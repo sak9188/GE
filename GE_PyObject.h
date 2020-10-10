@@ -19,15 +19,24 @@ public:
 	GE_PyFunction(PyObject* args, PyObject* param, bool NewRef = true);
 	
 	// 调用其他的参数
-	GE_PyObject* Call(PyObject* args);
+	GE_PyObject Call(PyObject* args);
 
 	//调用默认的参数
-	GE_PyObject* CallWithDefault();
+	GE_PyObject CallWithDefault();
 
 	~GE_PyFunction()
 	{
 		Py_XDECREF(obj);
 	}
+
+	// 移动语义
+	GE_PyFunction(GE_PyFunction &&pyobj)
+	{
+		this->obj = std::move(pyobj.obj);
+		this->param = std::move(pyobj.param);
+	}
+
+	PyObject* GetParamPointer(){ return this->param; }
 
 private:
 	GE_BAN_COPY(GE_PyFunction)
@@ -40,17 +49,16 @@ public:
 	GE_PyObject():obj(nullptr){}
 	GE_PyObject(PyObject* obj, bool newRef = true) :obj(obj)
 	{
-		if (obj == NULL)
-		{
-			obj = nullptr;
-			PyErr_Print();
-			print("构造GE_PyObject对象失败");
-		}
 		if (!newRef)
 		{
 			Py_XINCREF(obj); // borrowed
 			// 增加引用
 		}
+	}
+
+	bool IsNone()
+	{
+		return obj == NULL || obj == nullptr;
 	}
 
 	PyObject* GetPointer()
@@ -61,6 +69,12 @@ public:
 	virtual ~GE_PyObject()
 	{
 		Py_XDECREF(obj);
+	}
+
+	// 移动语义
+	GE_PyObject(GE_PyObject &&pyobj)
+	{
+		this->obj = std::move(pyobj.obj);
 	}
 
 protected:
@@ -90,8 +104,8 @@ class GE_PyMoudule : public GE_PyObject
 		}
 	}
 
-	GE_PyObject* Call(const char * str);
-	GE_PyObject* Call(const char * str, const std::initializer_list<PyObject*>& list);
+	GE_PyObject Call(const char * str);
+	GE_PyObject Call(const char * str, const std::initializer_list<PyObject*>& list);
 
 	void GetAllFunctions()
 	{
@@ -117,5 +131,5 @@ class GE_PyMoudule : public GE_PyObject
 private:
 	GE_BAN_COPY(GE_PyMoudule)
 
-	std::map<const char*, GE_PyFunction&, Fun_StrCmp> funclist;
+	std::map<const char*, GE_PyFunction, Fun_StrCmp> funclist;
 };

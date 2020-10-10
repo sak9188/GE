@@ -9,7 +9,7 @@ GE_PyFunction::GE_PyFunction(PyObject* args, PyObject* param, bool NewRef) : GE_
 	}
 }
 
-GE_PyObject* GE_PyFunction::Call(PyObject* args)
+GE_PyObject GE_PyFunction::Call(PyObject* args)
 {
 	PyObject* pyResult_NewRef = nullptr;
 	if (args == nullptr)
@@ -25,21 +25,19 @@ GE_PyObject* GE_PyFunction::Call(PyObject* args)
 	{
 		PyErr_Print();
 	}
-	return new GE_PyObject(pyResult_NewRef);
+	return GE_PyObject(pyResult_NewRef);
 }
 
-GE_PyObject* GE_PyMoudule::Call(const char * str)
+GE_PyObject GE_PyMoudule::Call(const char * str)
 {
 	if (obj == nullptr)
 	{
 		print("没有初始化py对象");
 		return nullptr;
 	}
-	// 调用函数
-	GE_PyObject* result = nullptr;
 	try
 	{
-		result = funclist.at(str).Call(nullptr);
+		return funclist.at(str).Call(nullptr);
 	}
 	catch (const std::exception&)
 	{
@@ -47,10 +45,9 @@ GE_PyObject* GE_PyMoudule::Call(const char * str)
 		print(str);
 		return nullptr;
 	}
-	return result;
 }
 
-GE_PyObject* GE_PyMoudule::Call(const char * str, const std::initializer_list<PyObject*>& list)
+GE_PyObject GE_PyMoudule::Call(const char * str, const std::initializer_list<PyObject*>& list)
 {
 	if (obj == nullptr)
 	{
@@ -59,7 +56,6 @@ GE_PyObject* GE_PyMoudule::Call(const char * str, const std::initializer_list<Py
 	}
 	// 调用函数
 	auto args = PyTuple_New(list.size());
-	GE_PyObject* result = nullptr;
 	int count = 0;
 	for (auto e : list)
 	{
@@ -67,7 +63,7 @@ GE_PyObject* GE_PyMoudule::Call(const char * str, const std::initializer_list<Py
 	}
 	try
 	{
-		result = funclist.at(str).Call(args);
+		return funclist.at(str).Call(args);
 	}
 	catch (const std::exception&)
 	{
@@ -75,5 +71,4 @@ GE_PyObject* GE_PyMoudule::Call(const char * str, const std::initializer_list<Py
 		print(str);
 		return nullptr;
 	}
-	return result;
 }

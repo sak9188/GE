@@ -6,14 +6,14 @@
 
 class GE_Ticker
 {
-	typedef std::map<GE::Int64, GE_PyFunction>		RegTickMap;
+	typedef std::map<GE::Uint64, GE_PyFunction>		RegTickMap;
 public:
 	GE_Ticker(void);
 	GE_Ticker(PyObject* pPyOwner_BorrowRef);
 	virtual ~GE_Ticker(void);
 
 public:
-	GE::Int64				RegTick(GE::Uint32 uTimeSec, PyObject* pyCallBack_BorrowRef, PyObject* pyParam_BorrowRef);	//注册一个Tick
+	GE::Uint64				RegTick(GE::Uint32 uTimeSec, PyObject* pyCallBack_BorrowRef, PyObject* pyParam_BorrowRef);	//注册一个Tick
 	bool					UnregTick(GE::Int64 uID);																	//取消一个tick
 	bool					TriggerTick(GE::Int64 uID);																	//强制触发一个Tick
 	bool					TriggerTick(GE::Int64 uID, PyObject* pyTrigger_BorrowRef);									//强制触发一个Tick
@@ -25,6 +25,7 @@ public:
 protected:
 	RegTickMap rigsters;
 	GE_PyObject	obj;
+	GE::Uint32	incId;
 };
 
 // 毫秒级别的定时器
