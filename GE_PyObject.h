@@ -10,29 +10,35 @@
 
 class GE_PyObject;
 
-class GE_PyFunction
+class GE_PyFunction : public GE_PyObject
 {
 public:
-	GE_PyFunction(PyObject* args, bool NewRef = true);
 
-	GE_PyObject* Call(GE_PyObject* args);
+	GE_PyFunction(PyObject* obj, bool newRef = false) : GE_PyObject(obj, newRef){}
+
+	GE_PyFunction(PyObject* args, PyObject* param, bool NewRef = true);
+	
+	// 调用其他的参数
+	GE_PyObject* Call(PyObject* args);
+
+	//调用默认的参数
+	GE_PyObject* CallWithDefault();
 
 	~GE_PyFunction()
 	{
 		Py_XDECREF(obj);
 	}
+
 private:
 	GE_BAN_COPY(GE_PyFunction)
-
-	PyObject* obj;
+	PyObject* param;
 };
 
 class GE_PyObject
 {
 public:
 	GE_PyObject():obj(nullptr){}
-
-	GE_PyObject(PyObject* obj, bool NewRef = true):obj(obj)
+	GE_PyObject(PyObject* obj, bool newRef = true) :obj(obj)
 	{
 		if (obj == NULL)
 		{
@@ -40,12 +46,35 @@ public:
 			PyErr_Print();
 			print("构造GE_PyObject对象失败");
 		}
-		if (!NewRef)
+		if (!newRef)
 		{
 			Py_XINCREF(obj); // borrowed
 			// 增加引用
 		}
 	}
+
+	PyObject* GetPointer()
+	{
+		return obj;
+	}
+
+	virtual ~GE_PyObject()
+	{
+		Py_XDECREF(obj);
+	}
+
+protected:
+	PyObject* obj;
+
+private:
+	GE_BAN_COPY(GE_PyObject)
+
+};
+
+
+class GE_PyMoudule : public GE_PyObject
+{
+	GE_PyMoudule() : GE_PyObject(nullptr){}
 
 	bool LoadModule(const char * str)
 	{
@@ -60,6 +89,9 @@ public:
 			Py_XINCREF(obj);
 		}
 	}
+
+	GE_PyObject* Call(const char * str);
+	GE_PyObject* Call(const char * str, const std::initializer_list<PyObject*>& list);
 
 	void GetAllFunctions()
 	{
@@ -77,31 +109,13 @@ public:
 			const char *key = PyUnicode_AsUTF8(pKey);
 			if (PyFunction_Check(pValue)) {
 				std::cout << "载入函数 " << key << " \n";
-				m_funclist.emplace(std::make_pair(key, new GE_PyFunction(pValue)));
+				funclist.emplace(std::make_pair(key, GE_PyFunction(pValue)));
 			}
 		}
 	}
 
-	GE_PyObject* Call(const char * str);
-
-	GE_PyObject* Call(const char * str, const std::initializer_list<PyObject*>& list);
-
-	PyObject* GetPointer()
-	{
-		return obj;
-	}
-
-	~GE_PyObject()
-	{
-		Py_XDECREF(obj);
-	}
-
 private:
-	GE_BAN_COPY(GE_PyObject)
+	GE_BAN_COPY(GE_PyMoudule)
 
-	PyObject* obj;
-	std::map<const char*, GE_PyFunction*, Fun_StrCmp> m_funclist;
+	std::map<const char*, GE_PyFunction&, Fun_StrCmp> funclist;
 };
-
-
-

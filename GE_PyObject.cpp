@@ -1,22 +1,15 @@
 #include "GE_PyObject.h"
 
-GE_PyFunction::GE_PyFunction(PyObject* args, bool NewRef) : obj(args)
+GE_PyFunction::GE_PyFunction(PyObject* args, PyObject* param, bool NewRef) : GE_PyObject(args, false), param(param)
 {
-	if (obj == NULL)
-	{
-		obj = nullptr;
-		PyErr_Print();
-		print("构造GE_PyObject对象失败");
-	}
 
 	if (!NewRef)
 	{
 		Py_XINCREF(obj); // borrowed
-						 // 增加引用
 	}
 }
 
-GE_PyObject* GE_PyFunction::Call(GE_PyObject* args)
+GE_PyObject* GE_PyFunction::Call(PyObject* args)
 {
 	PyObject* pyResult_NewRef = nullptr;
 	if (args == nullptr)
@@ -25,7 +18,7 @@ GE_PyObject* GE_PyFunction::Call(GE_PyObject* args)
 	}
 	else
 	{
-		pyResult_NewRef = PyEval_CallObject(obj, args->GetPointer());
+		pyResult_NewRef = PyEval_CallObject(obj, args);
 	}
 
 	if (NULL == pyResult_NewRef)
@@ -35,7 +28,7 @@ GE_PyObject* GE_PyFunction::Call(GE_PyObject* args)
 	return new GE_PyObject(pyResult_NewRef);
 }
 
-GE_PyObject* GE_PyObject::Call(const char * str)
+GE_PyObject* GE_PyMoudule::Call(const char * str)
 {
 	if (obj == nullptr)
 	{
@@ -46,7 +39,7 @@ GE_PyObject* GE_PyObject::Call(const char * str)
 	GE_PyObject* result = nullptr;
 	try
 	{
-		result = m_funclist.at(str)->Call(nullptr);
+		result = funclist.at(str).Call(nullptr);
 	}
 	catch (const std::exception&)
 	{
@@ -57,7 +50,7 @@ GE_PyObject* GE_PyObject::Call(const char * str)
 	return result;
 }
 
-GE_PyObject* GE_PyObject::Call(const char * str, const std::initializer_list<PyObject*>& list)
+GE_PyObject* GE_PyMoudule::Call(const char * str, const std::initializer_list<PyObject*>& list)
 {
 	if (obj == nullptr)
 	{
@@ -65,16 +58,16 @@ GE_PyObject* GE_PyObject::Call(const char * str, const std::initializer_list<PyO
 		return nullptr;
 	}
 	// 调用函数
-	auto args = std::make_shared<GE_PyObject>(PyTuple_New(list.size()));
+	auto args = PyTuple_New(list.size());
 	GE_PyObject* result = nullptr;
 	int count = 0;
 	for (auto e : list)
 	{
-		PyTuple_SetItem(args.get()->GetPointer(), count++, e);
+		PyTuple_SetItem(args, count++, e);
 	}
 	try
 	{
-		result = m_funclist.at(str)->Call(args.get());
+		result = funclist.at(str).Call(args);
 	}
 	catch (const std::exception&)
 	{
