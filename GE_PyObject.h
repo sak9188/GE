@@ -10,43 +10,10 @@
 
 class GE_PyObject;
 
-class GE_PyFunction : public GE_PyObject
-{
-public:
-
-	GE_PyFunction(PyObject* obj, bool newRef = false) : GE_PyObject(obj, newRef){}
-
-	GE_PyFunction(PyObject* args, PyObject* param, bool NewRef = true);
-	
-	// 调用其他的参数
-	GE_PyObject Call(PyObject* args);
-
-	//调用默认的参数
-	GE_PyObject CallWithDefault();
-
-	~GE_PyFunction()
-	{
-		Py_XDECREF(obj);
-	}
-
-	// 移动语义
-	GE_PyFunction(GE_PyFunction &&pyobj)
-	{
-		this->obj = std::move(pyobj.obj);
-		this->param = std::move(pyobj.param);
-	}
-
-	PyObject* GetParamPointer(){ return this->param; }
-
-private:
-	GE_BAN_COPY(GE_PyFunction)
-	PyObject* param;
-};
-
 class GE_PyObject
 {
 public:
-	GE_PyObject():obj(nullptr){}
+	GE_PyObject() :obj(nullptr){}
 	GE_PyObject(PyObject* obj, bool newRef = true) :obj(obj)
 	{
 		if (!newRef)
@@ -71,12 +38,6 @@ public:
 		Py_XDECREF(obj);
 	}
 
-	// 移动语义
-	GE_PyObject(GE_PyObject &&pyobj)
-	{
-		this->obj = std::move(pyobj.obj);
-	}
-
 protected:
 	PyObject* obj;
 
@@ -85,10 +46,41 @@ private:
 
 };
 
+class GE_PyFunction : public GE_PyObject
+{
+public:
+
+	GE_PyFunction(PyObject* obj, bool newRef = false) : GE_PyObject(obj, newRef){}
+
+	GE_PyFunction(PyObject* args, PyObject* param, bool NewRef = true);
+	
+	// 调用其他的参数
+	GE_PyObject* Call(PyObject* args);
+
+	//调用默认的参数
+	GE_PyObject* CallWithDefault();
+
+	~GE_PyFunction()
+	{
+		Py_XDECREF(obj);
+	}
+
+	PyObject* GetParamPointer(){ return this->param; }
+	PyObject* param;
+private:
+	GE_BAN_COPY(GE_PyFunction)
+
+};
+
 
 class GE_PyMoudule : public GE_PyObject
 {
+public:
+	// 空引用
 	GE_PyMoudule() : GE_PyObject(nullptr){}
+
+	// 不是新引用
+	GE_PyMoudule(GE_PyObject* obj) : GE_PyObject(obj->GetPointer()){}
 
 	bool LoadModule(const char * str)
 	{
@@ -104,8 +96,8 @@ class GE_PyMoudule : public GE_PyObject
 		}
 	}
 
-	GE_PyObject Call(const char * str);
-	GE_PyObject Call(const char * str, const std::initializer_list<PyObject*>& list);
+	GE_PyObject* Call(const char * str);
+	GE_PyObject* Call(const char * str, const std::initializer_list<PyObject*>& list);
 
 	void GetAllFunctions()
 	{

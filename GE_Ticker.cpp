@@ -16,13 +16,13 @@ GE::Uint64 GE_Ticker::RegTick(GE::Uint32 uTimeSec, PyObject* pyCallBack_BorrowRe
 	// 累加ID
 	++incId;
 	// 计算header时间
-	GE::Uint32 uTouchTime = GE_DateTime::Instance()->Seconds() + uTimeSec;
+	GE::Uint64 uTouchTime = 1; // GE_DateTime::Instance()->Seconds() + uTimeSec;
 	// 构建ID，时间为高32位，低32位为累进计数，使得存储到Map中是按时间排序的
-	auto uid = uTouchTime << 32 + incId;
+	GE::Uint64 uid = (uTouchTime << 32) + incId;
 	Py_INCREF(pyCallBack_BorrowRef);
 	Py_INCREF(pyParam_BorrowRef);
 
-	GE_PyFunction PF(pyCallBack_BorrowRef, pyParam_BorrowRef);
+	GE_PyFunction *PF = new GE_PyFunction(pyCallBack_BorrowRef, pyParam_BorrowRef);
 	this->rigsters.insert(std::make_pair(uid, PF));
 	return uid;
 }
@@ -53,13 +53,13 @@ bool GE_Ticker::TriggerTick(GE::Int64 uID, PyObject* pyTrigger_BorrowRef)
 	}
 
 	// 注意这里要拷贝一份再从Map中删除
-	GE_PyFunction PF(std::move(_iter->second));
+	GE_PyFunction *PF = _iter->second;
 	// 先从Map中删除,防止在下面的函数调用中修改_iter
 	this->rigsters.erase(_iter);
 
 	if (this->obj.IsNone())
 	{
-		PyObject* pyResult_NewRef = PyObject_CallFunctionObjArgs(PF.GetPointer(), pyTrigger_BorrowRef, PF.GetParamPointer(), NULL);
+		PyObject* pyResult_NewRef = PyObject_CallFunctionObjArgs(PF->GetPointer(), pyTrigger_BorrowRef, PF->GetParamPointer(), NULL);
 		if (NULL == pyResult_NewRef)
 		{
 			PyErr_Print();
@@ -70,7 +70,10 @@ bool GE_Ticker::TriggerTick(GE::Int64 uID, PyObject* pyTrigger_BorrowRef)
 		}
 	}
 	// 减少引用计数
-	Py_DECREF(PF.GetPointer());
-	Py_DECREF(PF.GetParamPointer());
+	Py_DECREF(PF->GetPointer());
+	Py_DECREF(PF->GetParamPointer());
+
+	// 删掉这个指针
+	GE_SAFE_DELETE(PF)
 	return true;
 }

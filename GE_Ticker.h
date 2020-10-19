@@ -6,7 +6,7 @@
 
 class GE_Ticker
 {
-	typedef std::map<GE::Uint64, GE_PyFunction>		RegTickMap;
+	typedef std::map<GE::Uint64, GE_PyFunction*>		RegTickMap;
 public:
 	GE_Ticker(void);
 	GE_Ticker(PyObject* pPyOwner_BorrowRef);
@@ -23,6 +23,8 @@ public:
 	GE_PyObject&			GetPyObj() { return obj; }
 
 protected:
+	void Init(){}
+
 	RegTickMap rigsters;
 	GE_PyObject	obj;
 	GE::Uint32	incId;
@@ -32,7 +34,6 @@ protected:
 class GE_ClockTicker : public GE_Ticker
 {
 public:
-	GE_ClockTicker();
 	~GE_ClockTicker();
 
 private:
@@ -45,7 +46,6 @@ GE_SET_SINGLETON(GE_ClockTicker)
 class GE_SlowTicker : public GE_Ticker
 {
 public:
-	GE_SlowTicker();
 	~GE_SlowTicker();
 
 private:
@@ -58,7 +58,6 @@ GE_SET_SINGLETON(GE_SlowTicker)
 class GE_IntervalTicker : public GE_Ticker
 {
 public:
-	GE_IntervalTicker();
 	~GE_IntervalTicker();
 
 private:
@@ -71,7 +70,6 @@ GE_SET_SINGLETON(GE_IntervalTicker)
 class GE_HourTicker : public GE_Ticker
 {
 public:
-	GE_HourTicker();
 	~GE_HourTicker();
 };
 
@@ -79,7 +77,6 @@ public:
 class GE_PeriodTicker : public GE_Ticker
 {
 public:
-	GE_PeriodTicker();
 	~GE_PeriodTicker();
 
 private:

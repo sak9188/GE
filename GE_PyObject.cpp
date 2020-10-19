@@ -9,7 +9,7 @@ GE_PyFunction::GE_PyFunction(PyObject* args, PyObject* param, bool NewRef) : GE_
 	}
 }
 
-GE_PyObject GE_PyFunction::Call(PyObject* args)
+GE_PyObject* GE_PyFunction::Call(PyObject* args)
 {
 	PyObject* pyResult_NewRef = nullptr;
 	if (args == nullptr)
@@ -25,10 +25,10 @@ GE_PyObject GE_PyFunction::Call(PyObject* args)
 	{
 		PyErr_Print();
 	}
-	return GE_PyObject(pyResult_NewRef);
+	return new GE_PyObject(pyResult_NewRef);
 }
 
-GE_PyObject GE_PyMoudule::Call(const char * str)
+GE_PyObject* GE_PyMoudule::Call(const char * str)
 {
 	if (obj == nullptr)
 	{
@@ -47,7 +47,7 @@ GE_PyObject GE_PyMoudule::Call(const char * str)
 	}
 }
 
-GE_PyObject GE_PyMoudule::Call(const char * str, const std::initializer_list<PyObject*>& list)
+GE_PyObject* GE_PyMoudule::Call(const char * str, const std::initializer_list<PyObject*>& list)
 {
 	if (obj == nullptr)
 	{
