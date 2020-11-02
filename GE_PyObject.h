@@ -80,6 +80,7 @@ public:
 	GE_PyMoudule() : GE_PyObject(nullptr){}
 
 	// 不是新引用
+	GE_PyMoudule(PyObject* obj) : GE_PyObject(obj) {}
 	GE_PyMoudule(GE_PyObject* obj) : GE_PyObject(obj->GetPointer()){}
 
 	bool LoadModule(const char * str)
@@ -112,10 +113,10 @@ public:
 		PyObject *pKey = nullptr, *pValue = nullptr;
 		for (Py_ssize_t i = 0; PyDict_Next(pDict, &i, &pKey, &pValue);) //borrwed
 		{
-			const char *key = PyUnicode_AsUTF8(pKey);
+			char *key = PyString_AsString(pKey);
 			if (PyFunction_Check(pValue)) {
 				std::cout << "载入函数 " << key << " \n";
-				funclist.emplace(std::make_pair(key, GE_PyFunction(pValue)));
+				funclist.emplace(std::make_pair(key, &GE_PyFunction(pValue)));
 			}
 		}
 	}
@@ -123,5 +124,5 @@ public:
 private:
 	GE_BAN_COPY(GE_PyMoudule)
 
-	std::map<const char*, GE_PyFunction, Fun_StrCmp> funclist;
+	std::map<char*, GE_PyFunction*, Fun_StrCmp> funclist;
 };

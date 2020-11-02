@@ -5,6 +5,10 @@ GE_Ticker::GE_Ticker()
 {
 }
 
+GE_Ticker::GE_Ticker(PyObject * pPyOwner_BorrowRef) : obj(pPyOwner_BorrowRef)
+{
+}
+
 
 GE_Ticker::~GE_Ticker()
 {
@@ -77,3 +81,23 @@ bool GE_Ticker::TriggerTick(GE::Int64 uID, PyObject* pyTrigger_BorrowRef)
 	GE_SAFE_DELETE(PF)
 	return true;
 }
+
+//GE_ClockTicker::~GE_ClockTicker()
+//{
+//}
+//
+//GE_SlowTicker::~GE_SlowTicker()
+//{
+//}
+//
+//GE_IntervalTicker::~GE_IntervalTicker()
+//{
+//}
+//
+//GE_HourTicker::~GE_HourTicker()
+//{
+//}
+//
+//GE_PeriodTicker::~GE_PeriodTicker()
+//{
+//}

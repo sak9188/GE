@@ -1,4 +1,6 @@
-#pragma once
+#ifndef GE_PYTHON_H
+#define GE_PYTHON_H
+
 #include <mutex>
 #include <memory>
 #include <Python.h>
@@ -17,7 +19,7 @@ public:
 		return nullptr;
 	}
 
-	GE_PyObject* GetModule(const char * str)
+	GE_PyMoudule* GetModule(const char * str)
 	{
 		if (!Py_IsInitialized())
 		{
@@ -26,7 +28,7 @@ public:
 		}
 		print("载入模块：");
 		print(str);
-		return new GE_PyObject(PyImport_ImportModule(str));
+		return new GE_PyMoudule(PyImport_ImportModule(str));
 	}
 
 	~GE_Python()
@@ -39,24 +41,28 @@ private:
 
 	void Init()
 	{
-		std::wstringstream ss;
+		if (Py_IsInitialized())
+		{
+			return;
+		}
+		std::stringstream ss;
 #ifdef _DEBUG
 		ss << "..\\python\\DLLs\\;"
-			<< "..\\python\\Lib\\python38.zip;"
+			<< "..\\python\\Lib\\python27.zip;"
 			<< "..\\python\\pkgs\\;"
 			<< ".\\";
 #else
 		ss << "..\\..\\python\\DLLs\\;"
-			<< "..\\..\\python\\Lib\\python38.zip;"
+			<< "..\\..\\python\\Lib\\python27.zip;"
 			<< "..\\..\\python\\pkgs\\;"
 			<< ".\\";
 #endif
-		Py_SetPath(ss.str().c_str());
 		Py_Initialize();
+		PySys_SetPath(const_cast<char*>(ss.str().c_str()));
 		print("初始化完成");
 	}
 
 
 };
-
 GE_SET_SINGLETON(GE_Python)
+#endif

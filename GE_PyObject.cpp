@@ -37,7 +37,7 @@ GE_PyObject* GE_PyMoudule::Call(const char * str)
 	}
 	try
 	{
-		return funclist.at(str).Call(nullptr);
+		return funclist.at(const_cast<char*>(str))->Call(nullptr);
 	}
 	catch (const std::exception&)
 	{
@@ -63,7 +63,7 @@ GE_PyObject* GE_PyMoudule::Call(const char * str, const std::initializer_list<Py
 	}
 	try
 	{
-		return funclist.at(str).Call(args);
+		return funclist.at(const_cast<char*>(str))->Call(args);
 	}
 	catch (const std::exception&)
 	{
