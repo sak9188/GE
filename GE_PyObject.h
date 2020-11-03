@@ -69,7 +69,6 @@ public:
 	PyObject* param;
 private:
 	GE_BAN_COPY(GE_PyFunction)
-
 };
 
 

@@ -38,7 +38,16 @@ bool GE_Ticker::UnregTick(GE::Int64 uID)
 	{
 		return false;
 	}
-	// 减少引用计数(这里直接委托C对象给析构释放，且引用计数减1)
+	// 减少引用计数
+	GE_PyFunction *PF = _iter->second;
+
+	// 减少引用计数
+	Py_DECREF(PF->GetPointer());
+	Py_DECREF(PF->GetParamPointer());
+
+	// 删掉这个指针
+	GE_SAFE_DELETE(PF)
+
 	this->rigsters.erase(_iter);
 	return true;
 }
@@ -82,6 +91,11 @@ bool GE_Ticker::TriggerTick(GE::Int64 uID, PyObject* pyTrigger_BorrowRef)
 	return true;
 }
 
+bool GE_ClockTicker::CallPerTime()
+{
+	return false;
+}
+
 //GE_ClockTicker::~GE_ClockTicker()
 //{
 //}
@@ -101,3 +115,5 @@ bool GE_Ticker::TriggerTick(GE::Int64 uID, PyObject* pyTrigger_BorrowRef)
 //GE_PeriodTicker::~GE_PeriodTicker()
 //{
 //}
+
+

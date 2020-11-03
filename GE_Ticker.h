@@ -1,5 +1,6 @@
 #pragma once
 #include <map>
+#include <mutex>
 
 #include "GE.h"
 #include "GE_PyObject.h"
@@ -8,8 +9,6 @@ class GE_Ticker
 {
 	typedef std::map<GE::Uint64, GE_PyFunction*>		RegTickMap;
 public:
-	GE_Ticker(void);
-	GE_Ticker(PyObject* pPyOwner_BorrowRef);
 	virtual ~GE_Ticker(void);
 
 public:
@@ -18,11 +17,15 @@ public:
 	bool					TriggerTick(GE::Int64 uID);																	//强制触发一个Tick
 	bool					TriggerTick(GE::Int64 uID, PyObject* pyTrigger_BorrowRef);									//强制触发一个Tick
 
-	// virtual void			CallPerTime() = delete;																		//每个周期一次，驱动tick
+	virtual bool			CallPerTime() = 0;																		    //每个周期一次，驱动tick
 
     GE_PyObject&			GetPyObj() { return obj; }
 
 protected:
+	// 所有的都通过下面的子类来驱动，这个类是不可以被构造的
+	GE_Ticker(void);
+	GE_Ticker(PyObject* pPyOwner_BorrowRef);
+
 	void Init() {};
 
 	RegTickMap rigsters;
@@ -30,18 +33,19 @@ protected:
 	GE_PyObject	obj;
 };
 
-//// 毫秒级别的定时器
-//class GE_ClockTicker : public GE_Ticker
-//{
-//public:
-//	~GE_ClockTicker();
-//
-//private:
-//	GE_SINGLETON(GE_ClockTicker)
-//};
-//
-//GE_SET_SINGLETON(GE_ClockTicker)
-//
+// 毫秒级别的定时器
+class GE_ClockTicker : public GE_Ticker
+{
+public:
+	~GE_ClockTicker() {};
+
+	bool CallPerTime();
+
+private:
+	GE_SINGLETON(GE_ClockTicker)
+};
+GE_SET_SINGLETON(GE_ClockTicker)
+
 //// 秒级别的定时器
 //class GE_SlowTicker : public GE_Ticker
 //{
