@@ -1,5 +1,6 @@
 #include "GE_Ticker.h"
 
+GE_SET_SINGLETON(GE_ClockTicker)
 
 GE_Ticker::GE_Ticker()
 {

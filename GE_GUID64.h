@@ -22,5 +22,4 @@ private:
 	void Init();
 	GE_SINGLETON(GE_GUID64)
 };
-GE_SET_SINGLETON(GE_GUID64)
 

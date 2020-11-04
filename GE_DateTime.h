@@ -45,7 +45,6 @@ public:
 	// void				SetFastTimeSpeed(GE::Int32 nFastSpeed, GE::Int32 nTimeTarget);				//设置时间加速
 
 private:
-	
 	GE::Int32			year;
 	GE::Int32			month;
 	GE::Int32			day;
@@ -62,8 +61,6 @@ private:
 	GE::Int64			accumulation;
 
 	GE_PyObject			m_PyNow;
-
-
 private:
 	void				CasheClock();
 	void				CasheTime();

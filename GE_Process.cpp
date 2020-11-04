@@ -1,4 +1,5 @@
 #include "GE_Process.h"
+GE_SET_SINGLETON(GE_Process)
 
 bool JudgeSystem(void)
 {
