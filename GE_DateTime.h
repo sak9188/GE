@@ -1,9 +1,8 @@
-#pragma once
-
 #include <mutex>
 #include "GE.h"
 #include "GE_PyObject.h"
 
+#pragma once
 class GE_DateTime
 {
 public:

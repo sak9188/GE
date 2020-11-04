@@ -75,3 +75,4 @@ namespace GE
 	typedef unsigned long long	Uint64;
 #endif
 }
+
