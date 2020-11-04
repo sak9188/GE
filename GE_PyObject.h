@@ -23,6 +23,23 @@ public:
 		}
 	}
 
+	void SetPythonObject(PyObject* pobj)
+	{
+		if (IsNone())
+		{
+			this->obj = pobj;
+			Py_XINCREF(pobj);
+		}
+		else
+		{
+			// 给原来的对象减一个引用
+			Py_XDECREF(obj);
+
+			this->obj = pobj;
+			Py_XINCREF(pobj);
+		}
+	}
+
 	bool IsNone()
 	{
 		return obj == NULL || obj == nullptr;

@@ -16,8 +16,8 @@ public:
 	GE::Uint64			AllotGUID();						//分配一个全球ID
 
 private:
-	GE::Uint64			m_uBaseID;
-	GE::Uint64			m_uMaxID;
+	GE::Uint64			baseID;
+	GE::Uint64			maxID;
 
 	void Init();
 	GE_SINGLETON(GE_GUID64)
