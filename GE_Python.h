@@ -61,6 +61,9 @@ private:
 #endif
 		Py_Initialize();
 		PySys_SetPath(const_cast<char*>(ss.str().c_str()));
+		// 使用了datetime模块，故要在此初始化
+		PyDateTime_IMPORT;
+
 		print("初始化完成");
 	}
 };

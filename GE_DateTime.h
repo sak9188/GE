@@ -9,6 +9,8 @@ public:
 	~GE_DateTime();
 
 public:
+	static void			Start();
+
 	static void			SleepMsec(GE::Int32 uMsec);													//休眠
 	bool				Refresh();																	//刷新时间，并缓存之【返回服务器时间是否顺畅】
 	bool				Update();																	//更新时间
@@ -69,4 +71,3 @@ private:
 
 	GE_SINGLETON(GE_DateTime)
 };
-GE_SET_SINGLETON(GE_DateTime)
