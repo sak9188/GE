@@ -1,10 +1,10 @@
 #pragma once
 
-#include <mutex>
-
 #include "GE.h"
+#include "GE_Singleton.h"
 
 class GE_GUID64
+	: public GE_Singleton<GE_GUID64>
 {
 	
 public:
@@ -18,8 +18,5 @@ public:
 private:
 	GE::Uint64			baseID;
 	GE::Uint64			maxID;
-
-	void Init();
-	GE_SINGLETON(GE_GUID64)
 };
 

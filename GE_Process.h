@@ -1,13 +1,14 @@
 #pragma once
 
-#include <mutex>
 #include <vector>
 
 #include "GE.h"
+#include "GE_Singleton.h"
 
 class GE_Process
 {
 public:
+	GE_Process();
 	~GE_Process();
 
 	void Start(int argc, char *argv[]);
@@ -17,15 +18,12 @@ public:
 public:
 	std::string processType;
 	GE::Uint16 processID;
+
 	// ConnectParam DefualConnectParam;
 	std::vector<std::string> argv;
 	bool showPrintLine;
 
 private:
-	void Init();
-
 	void SysCheck();
-
-	GE_SINGLETON(GE_Process)
 };
 

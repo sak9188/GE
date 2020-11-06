@@ -1,5 +1,4 @@
 #include "GE_Process.h"
-GE_SET_SINGLETON(GE_Process)
 
 bool JudgeSystem(void)
 {
@@ -9,7 +8,7 @@ bool JudgeSystem(void)
 	return *(char *)&a == 1 ? true : false;
 }
 
-void GE_Process::Init()
+GE_Process::GE_Process()
 {
 	if (!JudgeSystem())
 	{
@@ -17,7 +16,23 @@ void GE_Process::Init()
 	}
 }
 
-
 GE_Process::~GE_Process()
+{
+}
+
+void GE_Process::Start(int argc, char * argv[])
+{
+}
+
+void GE_Process::CloseConsole()
+{
+}
+
+std::string GE_Process::MakeProcessKey(const std::string & type, GE::Uint16 uid)
+{
+	return std::string();
+}
+
+void GE_Process::SysCheck()
 {
 }

@@ -1,5 +1,4 @@
 #include "GE_Python.h"
-GE_SET_SINGLETON(GE_Python)
 
 PyObject* GE::PyObjFromDatetime(GE::Uint32 y, GE::Uint32 m, GE::Uint32 d, GE::Uint32 H, GE::Uint32 M, GE::Uint32 S)
 {

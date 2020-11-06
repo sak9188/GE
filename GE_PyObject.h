@@ -8,8 +8,6 @@
 #include "GE.h"
 #include "GE_Grocery.h"
 
-class GE_PyObject;
-
 class GE_PyObject
 {
 public:
@@ -66,7 +64,6 @@ private:
 class GE_PyFunction : public GE_PyObject
 {
 public:
-
 	GE_PyFunction(PyObject* obj, bool newRef = false) : GE_PyObject(obj, newRef){}
 
 	GE_PyFunction(PyObject* args, PyObject* param, bool NewRef = true);

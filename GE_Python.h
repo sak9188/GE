@@ -1,18 +1,20 @@
 #ifndef GE_PYTHON_H
 #define GE_PYTHON_H
 
-#include <mutex>
 #include <memory>
-#include <Python.h>
-#include <datetime.h>
 
 #include <sstream>
 #include <iostream>
 
+#include <Python.h>
+#include <datetime.h>
+
 #include "GE.h"
 #include "GE_PyObject.h"
+#include "GE_Singleton.h"
 
 class GE_Python
+	: public GE_Singleton<GE_Python>
 {
 public:
 	PyObject* RegFuncVoid(PyObject* self, PyObject* arg)
@@ -32,16 +34,7 @@ public:
 		return new GE_PyMoudule(PyImport_ImportModule(str));
 	}
 
-	~GE_Python()
-	{
-		Py_Finalize();
-	}
-
-
-private:
-	GE_SINGLETON(GE_Python)
-
-	void Init()
+	GE_Python()
 	{
 		if (Py_IsInitialized())
 		{
@@ -63,8 +56,12 @@ private:
 		PySys_SetPath(const_cast<char*>(ss.str().c_str()));
 		// 使用了datetime模块，故要在此初始化
 		PyDateTime_IMPORT;
-
 		print("初始化完成");
+	}
+
+	~GE_Python()
+	{
+		Py_Finalize();
 	}
 };
 

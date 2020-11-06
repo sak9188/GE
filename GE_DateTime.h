@@ -1,15 +1,15 @@
-#include <mutex>
+#pragma once
 #include "GE.h"
 #include "GE_PyObject.h"
 #include "GE_Singleton.h"
+#include "GE_Python.h"
 
-#pragma once
 class GE_DateTime
 	: public GE_Singleton<GE_DateTime>
 {
 public:
-	GE_DateTime(void);
-	~GE_DateTime(void);
+	GE_DateTime();
+	~GE_DateTime();
 
 public:
 	static void			SleepMsec(GE::Int32 uMsec);													//休眠
@@ -36,7 +36,6 @@ public:
 	GE::Int32			DSTSeconds() { return dstSecond; }										    //服务端当前进程所在计算机的夏令时
 	GE_PyObject&		Now() { return pyNow; }														//现在的时间（Python）
 																									// 修正时间的函数
-
 	void				SetUnixTime(GE::Int32 nUnixTime);											//设置内部时间
 																									// 外部测试函数
 	bool				IsDay0(GE::Int32 uUnixTime);												//是否是一天的第0秒
@@ -48,7 +47,6 @@ public:
 private:
 	void				CasheClock();
 	void				CasheTime();
-	void				Init();
 
 private:
 	GE::Int32			year;

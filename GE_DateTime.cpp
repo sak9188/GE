@@ -1,21 +1,20 @@
 #include "GE_DateTime.h"
 
 #include <time.h>
+
 #include <boost/thread/thread.hpp>
 #include <boost/timer/timer.hpp>
-
-#include "GE_Python.h"
 
 // 东八区
 const GE::Int32 timezone = 8 * 3600;
 
-GE_DateTime::GE_DateTime(void) : accumulation(0)
+GE_DateTime::GE_DateTime() : accumulation(0)
 {
 	tzset();
 	// 缓存当前时间
 	unixTime = static_cast<GE::Int32>(time(0));
 	CasheClock();
-	CasheTime();
+	// CasheTime();
 	// 计算时区
 	timeZoneSecond = timezone;
 }
