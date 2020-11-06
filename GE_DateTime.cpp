@@ -9,27 +9,20 @@
 // 东八区
 const GE::Int32 timezone = 8 * 3600;
 
-GE_SET_SINGLETON(GE_DateTime)
+GE_DateTime::GE_DateTime(void) : accumulation(0)
+{
+	tzset();
+	// 缓存当前时间
+	unixTime = static_cast<GE::Int32>(time(0));
+	CasheClock();
+	CasheTime();
+	// 计算时区
+	timeZoneSecond = timezone;
+}
 
 GE_DateTime::~GE_DateTime()
 {
 
-}
-
-void GE_DateTime::Init()
-{
-	this->accumulation = 0;
-}
-
-void GE_DateTime::Start()
-{
-	tzset();
-	// 缓存当前时间
-	m_pInstance.unixTime = static_cast<GE::Int32>(time(0));
-	m_pInstance.CasheClock();
-	m_pInstance.CasheTime();
-	// 计算时区
-	m_pInstance.timeZoneSecond = timezone;
 }
 
 void GE_DateTime::SleepMsec(GE::Int32 uMsec)
@@ -111,5 +104,5 @@ void GE_DateTime::CasheTime()
 
 	这一段是设置Python的缓存时间
 	*/
-	m_PyNow.SetPythonObject(GE::PyObjFromDatetime(this->Year(), this->Month(), this->Day(), this->Hour(), this->Minute(), this->Second()));
+	pyNow.SetPythonObject(GE::PyObjFromDatetime(this->Year(), this->Month(), this->Day(), this->Hour(), this->Minute(), this->Second()));
 }

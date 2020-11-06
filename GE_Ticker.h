@@ -44,7 +44,6 @@ public:
 private:
 	GE_SINGLETON(GE_ClockTicker)
 };
-GE_SET_SINGLETON(GE_ClockTicker)
 
 //// 秒级别的定时器
 //class GE_SlowTicker : public GE_Ticker

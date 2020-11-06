@@ -1,16 +1,17 @@
 #include <mutex>
 #include "GE.h"
 #include "GE_PyObject.h"
+#include "GE_Singleton.h"
 
 #pragma once
 class GE_DateTime
+	: public GE_Singleton<GE_DateTime>
 {
 public:
-	~GE_DateTime();
+	GE_DateTime(void);
+	~GE_DateTime(void);
 
 public:
-	static void			Start();
-
 	static void			SleepMsec(GE::Int32 uMsec);													//休眠
 	bool				Refresh();																	//刷新时间，并缓存之【返回服务器时间是否顺畅】
 	bool				Update();																	//更新时间
@@ -33,7 +34,7 @@ public:
 	GE::Uint64			MSeconds() { return cpuCLock; }											    //进程启动到现在的毫秒数
 	GE::Int32			TimeZoneSeconds() { return timeZoneSecond; }								//服务端当前进程所在计算机的时区
 	GE::Int32			DSTSeconds() { return dstSecond; }										    //服务端当前进程所在计算机的夏令时
-	GE_PyObject&		Now() { return m_PyNow; }													//现在的时间（Python）
+	GE_PyObject&		Now() { return pyNow; }														//现在的时间（Python）
 																									// 修正时间的函数
 
 	void				SetUnixTime(GE::Int32 nUnixTime);											//设置内部时间
@@ -43,6 +44,11 @@ public:
 	// 先不管时间加速的问题
 	// GE::Int32			GetFastTimeSpeed();															//时间加速几倍
 	// void				SetFastTimeSpeed(GE::Int32 nFastSpeed, GE::Int32 nTimeTarget);				//设置时间加速
+
+private:
+	void				CasheClock();
+	void				CasheTime();
+	void				Init();
 
 private:
 	GE::Int32			year;
@@ -57,14 +63,7 @@ private:
 	GE::Int32			timeZoneSecond;
 	GE::Int32			dstSecond;
 	GE::Uint64			cpuCLock;
-
 	GE::Int64			accumulation;
 
-	GE_PyObject			m_PyNow;
-private:
-	void				CasheClock();
-	void				CasheTime();
-	void				Init();
-
-	GE_SINGLETON(GE_DateTime)
+	GE_PyObject			pyNow;
 };
