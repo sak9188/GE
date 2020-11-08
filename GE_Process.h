@@ -6,12 +6,14 @@
 #include "GE_Singleton.h"
 
 class GE_Process
+	: public GE_Singleton<GE_Process>
 {
 public:
 	GE_Process();
 	~GE_Process();
 
 	void Start(int argc, char *argv[]);
+	void KillSelf();
 	void CloseConsole();
 	std::string MakeProcessKey(const std::string &type, GE::Uint16 uid);
 

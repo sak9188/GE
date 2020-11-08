@@ -91,4 +91,3 @@ private:
 //};
 //
 //GE_SET_SINGLETON(GE_PeriodTicker)
-
