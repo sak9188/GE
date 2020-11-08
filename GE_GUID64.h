@@ -16,7 +16,7 @@ public:
 	GE::Uint64			AllotGUID();						//分配一个全球ID
 
 private:
-	GE::Uint64			baseID;
-	GE::Uint64			maxID;
+	// GE::Uint64			baseID;
+	// GE::Uint64			maxID;
 };
 

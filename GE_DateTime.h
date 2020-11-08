@@ -25,10 +25,13 @@ public:
 	GE::Int32			Second() { return second; }													//秒（秒钟，0 -- 59）
 	GE::Int32			WeekDay() { return weekDay; }												//星期几（0，星期天；1，星期1 ...）
 	GE::Int32			YeayDay() { return yearDay; }												//今年的第几天
-	GE::Int32			Seconds() { return unixTime; }												//从1970元到现在的秒数
-	GE::Int32			Minutes() { return unixTime / 60; }											//从1970元到现在的分钟数
-	GE::Int32			Hours() { return ( unixTime + timeZoneSecond + dstSecond) / 3600; }			//从1970元到现在的小时数
-	GE::Int32			Days() { return ( unixTime + timeZoneSecond + dstSecond) / 86400; }	        //从1970元到现在的天数（注意这里修正了时区的影响）
+	GE::Int64			Seconds() { return unixTime; }												//从1970元到现在的秒数
+	
+	// 防范未然，假定这个程序可以运行100年
+	GE::Int64			Minutes() { return unixTime / 60; }											//从1970元到现在的分钟数
+	
+	GE::Int32			Hours() { return static_cast<GE::Int32>(( unixTime + timeZoneSecond + dstSecond) / 3600); }			//从1970元到现在的小时数
+	GE::Int32			Days() { return static_cast<GE::Int32>(( unixTime + timeZoneSecond + dstSecond) / 86400); }	        //从1970元到现在的天数（注意这里修正了时区的影响）
 	GE::Int32			Weeks() { return (Days() + 3) / 7; }										//从1970元到现在的周数（注意这里修正了时区的影响）
 	GE::Int32			Months() { return ( year - 1970) * 12 + month - 1; }					    //从1970元到现在的月数（注意这里修正了时区的影响）
 	GE::Uint64			MSeconds() { return cpuCLock; }											    //进程启动到现在的毫秒数
@@ -49,6 +52,7 @@ private:
 	void				CasheTime();
 
 private:
+	GE::Int32			timeSpeed;
 	GE::Int32			year;
 	GE::Int32			month;
 	GE::Int32			day;
@@ -57,7 +61,9 @@ private:
 	GE::Int32			second;
 	GE::Int32			weekDay;
 	GE::Int32			yearDay;
-	GE::Int32			unixTime;
+	// 这里实际上只取5个字节，这样可以记录1000年以上的时间
+	GE::Int64			unixTime;
+
 	GE::Int32			timeZoneSecond;
 	GE::Int32			dstSecond;
 	GE::Uint64			cpuCLock;

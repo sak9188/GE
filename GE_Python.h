@@ -13,6 +13,16 @@
 #include "GE_PyObject.h"
 #include "GE_Singleton.h"
 
+namespace GE
+{
+	void InitPyDateTime();
+
+	PyObject* PyObjFromDatetime(GE::Uint32 y, GE::Uint32 m, GE::Uint32 d, GE::Uint32 H, GE::Uint32 M, GE::Uint32 S);
+
+	bool PyDateTimeCheck(PyObject* pyObj);
+}
+
+
 class GE_Python
 	: public GE_Singleton<GE_Python>
 {
@@ -54,8 +64,7 @@ public:
 #endif
 		Py_Initialize();
 		PySys_SetPath(const_cast<char*>(ss.str().c_str()));
-		// 使用了datetime模块，故要在此初始化
-		PyDateTime_IMPORT;
+		GE::InitPyDateTime();
 		print("初始化完成");
 	}
 
@@ -64,12 +73,4 @@ public:
 		Py_Finalize();
 	}
 };
-
-namespace GE
-{
-	PyObject* PyObjFromDatetime(GE::Uint32 y, GE::Uint32 m, GE::Uint32 d, GE::Uint32 H, GE::Uint32 M, GE::Uint32 S);
-
-	bool PyDateTimeCheck(PyObject* pyObj);
-}
-
 #endif

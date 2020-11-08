@@ -1,7 +1,5 @@
 #include "GE_Ticker.h"
 
-GE_SET_SINGLETON(GE_ClockTicker)
-
 GE_Ticker::GE_Ticker()
 {
 }
@@ -24,8 +22,8 @@ GE::Uint64 GE_Ticker::RegTick(GE::Uint32 uTimeSec, PyObject* pyCallBack_BorrowRe
 	GE::Uint64 uTouchTime = 1; // GE_DateTime::Instance()->Seconds() + uTimeSec;
 	// 构建ID，时间为高32位，低32位为累进计数，使得存储到Map中是按时间排序的
 	GE::Uint64 uid = (uTouchTime << 32) + incId;
-	Py_INCREF(pyCallBack_BorrowRef);
-	Py_INCREF(pyParam_BorrowRef);
+	Py_XINCREF(pyCallBack_BorrowRef);
+	Py_XINCREF(pyParam_BorrowRef);
 
 	GE_PyFunction *PF = new GE_PyFunction(pyCallBack_BorrowRef, pyParam_BorrowRef);
 	this->rigsters.insert(std::make_pair(uid, PF));
@@ -43,8 +41,8 @@ bool GE_Ticker::UnregTick(GE::Int64 uID)
 	GE_PyFunction *PF = _iter->second;
 
 	// 减少引用计数
-	Py_DECREF(PF->GetPointer());
-	Py_DECREF(PF->GetParamPointer());
+	Py_XDECREF(PF->GetPointer());
+	Py_XDECREF(PF->GetParamPointer());
 
 	// 删掉这个指针
 	GE_SAFE_DELETE(PF)
@@ -80,21 +78,16 @@ bool GE_Ticker::TriggerTick(GE::Int64 uID, PyObject* pyTrigger_BorrowRef)
 		}
 		else
 		{
-			Py_DECREF(pyResult_NewRef);
+			Py_XDECREF(pyResult_NewRef);
 		}
 	}
 	// 减少引用计数
-	Py_DECREF(PF->GetPointer());
-	Py_DECREF(PF->GetParamPointer());
+	Py_XDECREF(PF->GetPointer());
+	Py_XDECREF(PF->GetParamPointer());
 
 	// 删掉这个指针
 	GE_SAFE_DELETE(PF)
 	return true;
-}
-
-bool GE_ClockTicker::CallPerTime()
-{
-	return false;
 }
 
 //GE_ClockTicker::~GE_ClockTicker()
@@ -118,4 +111,34 @@ bool GE_ClockTicker::CallPerTime()
 //}
 //
 
+GE_SlowTicker::GE_SlowTicker(void)
+{
+}
 
+GE_SlowTicker::~GE_SlowTicker(void)
+{
+}
+
+GE_IntervalTicker::GE_IntervalTicker(void)
+{
+}
+
+GE_IntervalTicker::~GE_IntervalTicker(void)
+{
+}
+
+GE_HourTicker::GE_HourTicker()
+{
+}
+
+GE_HourTicker::~GE_HourTicker()
+{
+}
+
+GE_PeriodTicker::GE_PeriodTicker(void)
+{
+}
+
+GE_PeriodTicker::~GE_PeriodTicker(void)
+{
+}

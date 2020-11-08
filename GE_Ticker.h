@@ -4,6 +4,7 @@
 
 #include "GE.h"
 #include "GE_PyObject.h"
+#include "GE_Singleton.h"
 
 class GE_Ticker
 {
@@ -33,61 +34,38 @@ protected:
 	GE_PyObject	obj;
 };
 
-// 毫秒级别的定时器
-class GE_ClockTicker : public GE_Ticker
+// 秒级别的定时器
+class GE_SlowTicker 
+	: public GE_Ticker, public GE_Singleton<GE_SlowTicker>
 {
 public:
-	~GE_ClockTicker() {};
-
-	bool CallPerTime();
-
-private:
-	GE_SINGLETON(GE_ClockTicker)
+	GE_SlowTicker(void);
+	~GE_SlowTicker(void);
 };
 
-//// 秒级别的定时器
-//class GE_SlowTicker : public GE_Ticker
-//{
-//public:
-//	~GE_SlowTicker();
-//
-//private:
-//	GE_SINGLETON(GE_SlowTicker)
-//};
-//
-//GE_SET_SINGLETON(GE_SlowTicker)
-//
-//// 分钟级别的定时器
-//class GE_IntervalTicker : public GE_Ticker
-//{
-//public:
-//	~GE_IntervalTicker();
-//
-//private:
-//	GE_SINGLETON(GE_IntervalTicker)
-//};
-//
-//GE_SET_SINGLETON(GE_IntervalTicker)
-//
-//// 小时级别的定时器
-//class GE_HourTicker : public GE_Ticker
-//{
-//public:
-//	~GE_HourTicker();
-//
-//private:
-//	GE_SINGLETON(GE_HourTicker)
-//};
-//GE_SET_SINGLETON(GE_HourTicker)
-//
-//// 天级别的定时器
-//class GE_PeriodTicker : public GE_Ticker
-//{
-//public:
-//	~GE_PeriodTicker();
-//
-//private:
-//	GE_SINGLETON(GE_PeriodTicker)
-//};
-//
-//GE_SET_SINGLETON(GE_PeriodTicker)
+// 分钟级别的定时器
+class GE_IntervalTicker 
+	: public GE_Ticker, public GE_Singleton<GE_IntervalTicker>
+{
+public:
+	GE_IntervalTicker(void);
+	~GE_IntervalTicker(void);
+};
+
+// 小时级别的定时器
+class GE_HourTicker 
+	: public GE_Ticker, public GE_Singleton<GE_HourTicker>
+{
+public:
+	GE_HourTicker();
+	~GE_HourTicker();
+};
+
+// 天级别的定时器
+class GE_PeriodTicker 
+	: public GE_Ticker, public GE_Singleton<GE_PeriodTicker>
+{
+public:
+	GE_PeriodTicker(void);
+	~GE_PeriodTicker(void);
+};

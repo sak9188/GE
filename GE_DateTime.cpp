@@ -8,13 +8,15 @@
 // 东八区
 const GE::Int32 timezone = 8 * 3600;
 
-GE_DateTime::GE_DateTime() : accumulation(0)
+GE_DateTime::GE_DateTime() 
+	: accumulation(0), timeSpeed(1000)
 {
 	tzset();
 	// 缓存当前时间
-	unixTime = static_cast<GE::Int32>(time(0));
+	unixTime = static_cast<GE::Int64>(time(0));
+	printf("unixtme %ld \n", unixTime);
 	CasheClock();
-	// CasheTime();
+	CasheTime();
 	// 计算时区
 	timeZoneSecond = timezone;
 }
@@ -31,20 +33,44 @@ void GE_DateTime::SleepMsec(GE::Int32 uMsec)
 
 bool GE_DateTime::Refresh()
 {
-	GE::Uint64 uTmpClock = this->cpuCLock;
+	GE::Uint64 tmpClock = this->cpuCLock;
 	this->CasheClock();
-	if (this->cpuCLock < uTmpClock)
+	if (this->cpuCLock < tmpClock)
 	{
 		std::cout << "Time Cycle." << std::endl;
 		return false;
 	}
 	// 注意在上面已经能够确保m_uCPUCLock >= uTmpClock了
-	this->accumulation += (this->cpuCLock - uTmpClock);
+	this->accumulation += (this->cpuCLock - tmpClock);
 	return true;
 }
 
 bool GE_DateTime::Update()
 {
+	/*
+	如果过了1秒以上,则计算时间
+	这样1秒1秒的的计算，可以让服务器能够追帧
+	*/
+	if (this->accumulation > this->timeSpeed)
+	{
+		this->unixTime += 1;
+		this->accumulation -= this->timeSpeed;
+		this->CasheTime();
+		bool b = this->accumulation < this->timeSpeed;
+#ifdef _MSC_VER
+		// 检查加速的目标，停止加速
+		//if (this->m_uTimeSpeed != 1000 && this->m_nUnixTime >= this->m_nTimeTarget)
+		//{
+		//	this->m_uTimeSpeed = 1000;
+		//	this->m_nTimeTarget = 0;
+		//}
+#endif
+		return b;
+	}
+	else
+	{
+		return true;
+	}
 	return false;
 }
 
