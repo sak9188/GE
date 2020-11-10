@@ -25,7 +25,15 @@ public:
 	std::vector<std::string> argv;
 	bool showPrintLine;
 
+	GE::Uint8 MachineID(void) { return machineID; }
+	GE::Uint8 ProcessUID(void) { return processUID; }
+
 private:
 	void SysCheck();
+
+	// 机器id
+	GE::Uint8 machineID;
+	// 进程的自增id
+	GE::Uint8 processUID;
 };
 

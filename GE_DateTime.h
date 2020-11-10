@@ -25,10 +25,11 @@ public:
 	GE::Int32			Second() { return second; }													//秒（秒钟，0 -- 59）
 	GE::Int32			WeekDay() { return weekDay; }												//星期几（0，星期天；1，星期1 ...）
 	GE::Int32			YeayDay() { return yearDay; }												//今年的第几天
+																									// 防范未然，假定这个程序可以运行100年
+	// 假定这个程序可以运行100年
 	GE::Int64			Seconds() { return unixTime; }												//从1970元到现在的秒数
 	
-	// 防范未然，假定这个程序可以运行100年
-	GE::Int64			Minutes() { return unixTime / 60; }											//从1970元到现在的分钟数
+	GE::Int32			Minutes() { return static_cast<GE::Int32>(unixTime / 60); }											//从1970元到现在的分钟数
 	
 	GE::Int32			Hours() { return static_cast<GE::Int32>(( unixTime + timeZoneSecond + dstSecond) / 3600); }			//从1970元到现在的小时数
 	GE::Int32			Days() { return static_cast<GE::Int32>(( unixTime + timeZoneSecond + dstSecond) / 86400); }	        //从1970元到现在的天数（注意这里修正了时区的影响）

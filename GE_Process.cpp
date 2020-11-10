@@ -1,6 +1,7 @@
 #include "GE_Process.h"
 
 #include <boost\process\environment.hpp>
+#include <boost\lexical_cast.hpp>
 
 #include "GE_Python.h"
 #include "GE_DateTime.h"
@@ -15,6 +16,7 @@ bool JudgeSystem(void)
 }
 
 GE_Process::GE_Process()
+	:processUID(1)
 {
 	SysCheck();
 
@@ -40,17 +42,22 @@ GE_Process::~GE_Process()
 void GE_Process::Start(int argc, char * argv[])
 {
 	
-	if (argc != 2)
+	if (argc != 3)
 	{
 		printf("plz input the process type");
 		KillSelf();
 	}
 
-	processType = argv[1];
+	machineID = static_cast<GE::Uint8>(boost::lexical_cast<GE::Uint16>(argv[1])); //static_cast<GE::Uint8>(argv[1]);
+	processType = argv[2];
 	processID = boost::this_process::get_id();
 
+	printf("machineID %d \n", machineID);
 	printf("processType %s \n", processType.c_str());
 	printf("processId %d \n", processID);
+
+	// 0b 1011111 10101010 11000100 00011100 11000001 00000000 00000000
+	// printf("processGUID_64 %I64u \n", GE_GUID64::Instance()->AllotGUID());
 }
 
 void GE_Process::KillSelf()
