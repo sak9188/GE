@@ -6,6 +6,7 @@
 #include "GE_Python.h"
 #include "GE_DateTime.h"
 #include "GE_GUID64.h"
+#include "GE_IO.h"
 
 bool JudgeSystem(void)
 {
@@ -20,15 +21,15 @@ GE_Process::GE_Process()
 {
 	SysCheck();
 
-	// 初始化Python
+	// step1 构建IO
+	GE_IO::New();
+	// step2 初始化Python
 	GE_Python::New();
-	// 初始化时间
+	// step3 初始化时间
 	GE_DateTime::New();
-	// step4 构建IO
-	// GEIO::New();
-	// step5 构建化全局ID分配器
+	// step4 构建化全局ID分配器
 	GE_GUID64::New();
-	// step6网络打包类、全局消息打包器
+	// step6 网络打包类、全局消息打包器
 }
 
 GE_Process::~GE_Process()
@@ -37,6 +38,7 @@ GE_Process::~GE_Process()
 	GE_GUID64::Delete();
 	GE_DateTime::Delete();
 	GE_Python::Delete();
+	GE_IO::Delete();
 }
 
 void GE_Process::Start(int argc, char * argv[])
