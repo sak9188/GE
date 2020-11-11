@@ -51,6 +51,7 @@ void GE_Process::Start(int argc, char * argv[])
 	}
 
 	machineID = static_cast<GE::Uint8>(boost::lexical_cast<GE::Uint16>(argv[1])); //static_cast<GE::Uint8>(argv[1]);
+	
 	processType = argv[2];
 	processID = boost::this_process::get_id();
 

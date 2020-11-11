@@ -26,6 +26,7 @@ namespace GE
 class GE_Python
 	: public GE_Singleton<GE_Python>
 {
+	GE_BAN_COPY(GE_Python)
 public:
 	PyObject* RegFuncVoid(PyObject* self, PyObject* arg)
 	{

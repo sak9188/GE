@@ -6,6 +6,7 @@
 class GE_GUID64
 	: public GE_Singleton<GE_GUID64>
 {
+	GE_BAN_COPY(GE_GUID64)
 public:
 	GE_GUID64(void);
 	~GE_GUID64(void);

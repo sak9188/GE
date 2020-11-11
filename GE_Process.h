@@ -8,6 +8,7 @@
 class GE_Process
 	: public GE_Singleton<GE_Process>
 {
+	GE_BAN_COPY(GE_Process)
 public:
 	GE_Process();
 	~GE_Process();
