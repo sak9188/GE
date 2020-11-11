@@ -1,5 +1,4 @@
 #pragma once
-#define print(x) std::cout << x << std::endl
 
 // 整数取值范围
 #define GE_INT8_MIN		(-127 - 1)

@@ -19,8 +19,9 @@ public:
 	GE_IO& Warning();
 	GE_IO& Error();
 
+	void					ShowTime(bool isShow);
 	std::string				GetOutString();
-	std::string				UTF8ToGBK(const std::string& szUTF8);
+	// std::string				UTF8ToGBK(const std::string& szUTF8);
 
 	GE_IO&					operator<<(const char* s);
 	GE_IO&					operator<<(const std::string& s);
@@ -33,7 +34,19 @@ public:
 
 private:
 	std::ostringstream		outBuf;
-
 	bool					expected;
+
+	// 是否显示时间
+	bool					showTime;
 };
+
+#ifdef _MSC_VER
+#define GE_IO_ShowTime(BOOL) GE_IO::Instance()->ShowTime(BOOL)
+#define GE_Trace GE_IO::Instance()->Trace()
+#define GE_Info GE_IO::Instance()->Info()
+#define GE_Debug GE_IO::Instance()->Debug()
+#define GE_Warning GE_IO::Instance()->Warning()
+#define GE_Error GE_IO::Instance()->Error()
+#endif // _MSC_VER
+
 

@@ -5,6 +5,8 @@
 #include <boost/thread/thread.hpp>
 #include <boost/timer/timer.hpp>
 
+#include "GE_IO.h"
+
 // 东八区
 const GE::Int32 timezone = 8 * 3600;
 
@@ -14,7 +16,10 @@ GE_DateTime::GE_DateTime()
 	tzset();
 	// 缓存当前时间
 	unixTime = static_cast<GE::Int64>(time(0));
-	printf("unixtme %ld \n", unixTime);
+	
+	// printf("unixtme %ld \n", unixTime);
+	GE_Trace << "unixtme " << unixTime << "\n";
+
 	CasheClock();
 	CasheTime();
 	// 计算时区

@@ -40,8 +40,7 @@ public:
 			std::cout << "Python 没有初始化" << std::endl;
 			return nullptr;
 		}
-		print("载入模块：");
-		print(str);
+		GE_Info << "载入模块：" << str << "\n";
 		return new GE_PyMoudule(PyImport_ImportModule(str));
 	}
 
@@ -66,7 +65,7 @@ public:
 		Py_Initialize();
 		PySys_SetPath(const_cast<char*>(ss.str().c_str()));
 		GE::InitPyDateTime();
-		print("初始化完成");
+		GE_Info << "初始化完成\n";
 	}
 
 	~GE_Python()

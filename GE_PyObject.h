@@ -7,6 +7,7 @@
 
 #include "GE.h"
 #include "GE_Grocery.h"
+#include "GE_IO.h"
 
 class GE_PyObject
 {
@@ -117,10 +118,11 @@ public:
 	{
 		if (obj == nullptr)
 		{
-			print("没有初始化py对象");
+			// print("没有初始化py对象");
+			GE_Error << "没有初始化py对象\n";
 			return;
 		}
-		print("尝试载入所有函数");
+		GE_Info << "尝试载入所有函数\n";
 		// 获得所有函数
 		PyObject *const pDict = PyModule_GetDict(obj); // borrowed
 		PyObject *pKey = nullptr, *pValue = nullptr;

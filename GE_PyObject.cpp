@@ -1,5 +1,7 @@
 #include "GE_PyObject.h"
 
+#include "GE_IO.h"
+
 GE_PyFunction::GE_PyFunction(PyObject* args, PyObject* param, bool NewRef) : GE_PyObject(args, false), param(param)
 {
 
@@ -32,7 +34,7 @@ GE_PyObject* GE_PyMoudule::Call(const char * str)
 {
 	if (obj == nullptr)
 	{
-		print("没有初始化py对象");
+		GE_Error << "没有初始化py对象\n";
 		return nullptr;
 	}
 	try
@@ -41,8 +43,7 @@ GE_PyObject* GE_PyMoudule::Call(const char * str)
 	}
 	catch (const std::exception&)
 	{
-		print("没有这个函数");
-		print(str);
+		GE_Error << "没有这个函数" << str <<"\n";
 		return nullptr;
 	}
 }
@@ -51,7 +52,7 @@ GE_PyObject* GE_PyMoudule::Call(const char * str, const std::initializer_list<Py
 {
 	if (obj == nullptr)
 	{
-		print("没有初始化py对象");
+		GE_Error << "没有初始化py对象\n";
 		return nullptr;
 	}
 	// 调用函数
@@ -67,8 +68,7 @@ GE_PyObject* GE_PyMoudule::Call(const char * str, const std::initializer_list<Py
 	}
 	catch (const std::exception&)
 	{
-		print("没有这个函数");
-		print(str);
+		GE_Error << "没有这个函数" << str << "\n";
 		return nullptr;
 	}
 }
