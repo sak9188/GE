@@ -10,6 +10,23 @@
 
 class MsgBase;
 
+struct GE_NetInfo
+{
+	GE::Uint32			sessionID;
+	GE::Uint16			who;
+	GE::Uint64			bindLong;
+	GE::Int32			connectTime;
+	GE::Int32			kickTime;
+	GE::Int32			sendTime;
+	GE::Int32			recvTime;
+	GE::Uint32			readMsgCount;
+	GE::Uint32			sendMsgCount;
+	GE::Uint16			waitWhoTime;
+	GE::Uint16			waitRecvTime;
+	std::string			zip;
+	ENetConnectState	state;
+};
+
 class GE_NetWork
 {
 	GE_BAN_COPY(GE_NetWork)
@@ -92,7 +109,7 @@ public:
 	boost::asio::io_service&		IOS() { return ios; }
 
 	// DebugInfo
-	NetInfoVector		GetDebugInfoList_L();
+	std::vector<GE_NetInfo> GetDebugInfoList_L();
 
 private:
 	/*

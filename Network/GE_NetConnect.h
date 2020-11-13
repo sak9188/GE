@@ -6,6 +6,8 @@
 #include <boost\thread.hpp>
 #include <boost\enable_shared_from_this.hpp>
 
+#include "GE_NetBlock.h"
+
 class GE_NetWork;
 
 // 一个连接的状态
@@ -66,7 +68,7 @@ private:
 	boost::asio::ip::tcp::socket boostSocket; //连接的boost::socket
 	GE_NetSendBuf		sendBuf;		//连接的发送buf
 	GE_NetRecvBuf		recvBuf;		//连接的接收buf
-	GE_NetBuf			recvCache;		//连接的当前消息接收buf
+	GE_NetBlock			recvCache;		//连接的当前消息接收buf
 
 	boost::mutex		sendMutex;		//发送buf的线程锁
 	boost::mutex		recvMutex;		//接收buf的线程锁
