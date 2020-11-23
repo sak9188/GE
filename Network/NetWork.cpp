@@ -1,7 +1,7 @@
-#include "GE_NetWork.h"
+#include "NetWork.h"
 
 
-GE_NetWork::GE_NetWork(GE::Uint32 uMaxConnect, GE::Uint16 uThread)
+GE::Net::NetWork::NetWork(GE::Uint32 uMaxConnect, GE::Uint16 uThread)
 	: connectMgr(uMaxConnect)
 	, isRun(false)
 	, isStop(false)
@@ -22,6 +22,6 @@ GE_NetWork::GE_NetWork(GE::Uint32 uMaxConnect, GE::Uint16 uThread)
 	}
 }
 
-GE_NetWork::~GE_NetWork()
+GE::Net::NetWork::~NetWork()
 {
 }
