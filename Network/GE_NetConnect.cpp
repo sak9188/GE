@@ -2,7 +2,8 @@
 
 
 
-GE_NetConnect::GE_NetConnect()
+GE_NetConnect::GE_NetConnect(GE_NetWork* pNetWork)
+	: boostSocket(pNetWork->IOS())
 {
 }
 

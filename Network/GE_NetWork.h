@@ -6,26 +6,9 @@
 #include <boost\asio.hpp>
 
 #include "GE_NetMgr.h"
-#include "GE_NetConnect.h"
 
 class MsgBase;
-
-struct GE_NetInfo
-{
-	GE::Uint32			sessionID;
-	GE::Uint16			who;
-	GE::Uint64			bindLong;
-	GE::Int32			connectTime;
-	GE::Int32			kickTime;
-	GE::Int32			sendTime;
-	GE::Int32			recvTime;
-	GE::Uint32			readMsgCount;
-	GE::Uint32			sendMsgCount;
-	GE::Uint16			waitWhoTime;
-	GE::Uint16			waitRecvTime;
-	std::string			zip;
-	ENetConnectState	state;
-};
+class GE_NetConnect;
 
 class GE_NetWork
 {
@@ -34,98 +17,99 @@ public:
 	GE_NetWork(GE::Uint32 maxConnect, GE::Uint16 thread);
 	~GE_NetWork(void);
 
-	// 监听一个端口
-	bool Listen(GE::Uint32 port);
-	
-	// 开始工作
-	void Start();
-	
-	// 停止
-	void Stop();
+	//// 监听一个端口
+	//bool Listen(GE::Uint32 port);
+	//
+	//// 开始工作
+	//void Start();
+	//
+	//// 停止
+	//void Stop();
 
-	// 连接一个远程ip、端口
-	bool Connect(const char* sIP, GE::Uint32 uPort, GE::Uint32& uSessionID, GE::Uint16 uWho, void* pBindPoint, ConnectParam* pCP = NULL);
-	
-	// 断开一个连接
-	void DisConnect(GE::Uint32 uSessionID);
-	
-	// 延迟断开一个连接
-	void DelayDisConnect(GE::Uint32 uSessionID, GE::Int32 nDelayTime);
-	
-	// 清理一个连接
-	void ClearConnect(GE::Uint32 uSessionID);
-	
-	// 设置连接时间
-	void SetWaitTime(GE::Uint32 uSessionID, GE::Uint16 uWaitWhoTime, GE::Uint16 uWaitRecvTime);
-	
-	// 是否有某个连接
-	bool HasConnect(GE::Uint32 uSessionID);
-	
-	// 给uSessionID连接发送一段字节（线程不安全，只能逻辑线程调用）
-	void SendBytesST(GE::Uint32 uSessionID, const void* pHead, GE::Uint16 uSize);
-	
-	// 给uSessionID连接发送一段字节（线程安全）
-	void SendBytesMT(GE::Uint32 uSessionID, const void* pHead, GE::Uint16 uSize);
-	
-	// 是否网络层还在运行中
-	bool IsRun() { return isRun; }
-	
-	// 是否数据发送完毕
-	bool IsSendOver(GE::Uint32 uSessionID);
-	
-	// 设置异步发送模式
-	void AsyncSendWho(GE::Uint16 uAsycnSendWho);
-	
-	// 获取异步发送
-	GE::Uint16 AsyncSendWho() { return asyncSendWho; }
-	
-	// 在异步发送模式下，标记还有数据
-	void AsyncHasData(GE::Uint32 uSessionID);
-	
-	// 获取IP
-	bool GetSessionIP(GE::Uint32 uSessionID, std::string& sIP);
-	
-	// 强制断开非法连接
-	void				ForceShutdownIllegalConnect_L();
+	//// 连接一个远程ip、端口
+	//bool Connect(const char* sIP, GE::Uint32 uPort, GE::Uint32& uSessionID, GE::Uint16 uWho, void* pBindPoint, ConnectParam* pCP = NULL);
+	//
+	//// 断开一个连接
+	//void DisConnect(GE::Uint32 uSessionID);
+	//
+	//// 延迟断开一个连接
+	//void DelayDisConnect(GE::Uint32 uSessionID, GE::Int32 nDelayTime);
+	//
+	//// 清理一个连接
+	//void ClearConnect(GE::Uint32 uSessionID);
+	//
+	//// 设置连接时间
+	//void SetWaitTime(GE::Uint32 uSessionID, GE::Uint16 uWaitWhoTime, GE::Uint16 uWaitRecvTime);
+	//
+	//// 是否有某个连接
+	//bool HasConnect(GE::Uint32 uSessionID);
+	//
+	//// 给uSessionID连接发送一段字节（线程不安全，只能逻辑线程调用）
+	//void SendBytesST(GE::Uint32 uSessionID, const void* pHead, GE::Uint16 uSize);
+	//
+	//// 给uSessionID连接发送一段字节（线程安全）
+	//void SendBytesMT(GE::Uint32 uSessionID, const void* pHead, GE::Uint16 uSize);
+	//
+	//// 是否网络层还在运行中
+	//bool IsRun() { return isRun; }
+	//
+	//// 是否数据发送完毕
+	//bool IsSendOver(GE::Uint32 uSessionID);
+	//
+	//// 设置异步发送模式
+	//void AsyncSendWho(GE::Uint16 uAsycnSendWho);
+	//
+	//// 获取异步发送
+	//GE::Uint16 AsyncSendWho() { return asyncSendWho; }
+	//
+	//// 在异步发送模式下，标记还有数据
+	//void AsyncHasData(GE::Uint32 uSessionID);
+	//
+	//// 获取IP
+	//bool GetSessionIP(GE::Uint32 uSessionID, std::string& sIP);
+	//
+	//// 强制断开非法连接
+	//void				ForceShutdownIllegalConnect_L();
 
 	// 获取消息的函数簇
-	bool				MoveNextMsg();
-	void				SetCurWho(GE::Uint16 uWho) { curConnect->Who(uWho); }
-	void				SetCurPoint(void* p) { curConnect->BindPoint(p); }
-	void				SetCurLong(GE::Uint64 ui64) { curConnect->BindLong(ui64); }
-	GE::Uint32			CurSessionID() { return curConnect->SessionID(); }
-	GE::Uint16			CurWho() { return curConnect->Who(); }
-	void*				CurPoint() { return curConnect->BindPoint(); }
-	GE::Uint64			CurLong() { return curConnect->BindLong(); }
-	GE::Uint32			CurReadMsgCount() { return curConnect->ReadMsgCount(); }
-	GE::Uint32			CurSendMsgCount() { return curConnect->SendMsgCount(); }
+	// bool				MoveNextMsg();
+	//void				SetCurWho(GE::Uint16 uWho) { curConnect->Who(uWho); }
+	//void				SetCurPoint(void* p) { curConnect->BindPoint(p); }
+	//void				SetCurLong(GE::Uint64 ui64) { curConnect->BindLong(ui64); }
+	//GE::Uint32			CurSessionID() { return curConnect->SessionID(); }
+	//GE::Uint16			CurWho() { return curConnect->Who(); }
+	//void*				CurPoint() { return curConnect->BindPoint(); }
+	//GE::Uint64			CurLong() { return curConnect->BindLong(); }
+	//GE::Uint32			CurReadMsgCount() { return curConnect->ReadMsgCount(); }
+	//GE::Uint32			CurSendMsgCount() { return curConnect->SendMsgCount(); }
 
-	// MsgBase*			CurMsg() { return m_pCurMsg; }
-	bool				CurIsClose() { return lastConnectClose; }
-	bool				CurIsRound() { return iterCnt == 0; }
-	void				CurRemoteEndPoint(std::string& sIP, GE::Uint32& uPort) { curConnect->RemoteEndPoint(sIP, uPort); }
+	//// MsgBase*			CurMsg() { return m_pCurMsg; }
+	//bool				CurIsClose() { return lastConnectClose; }
+	//bool				CurIsRound() { return iterCnt == 0; }
+	//void				CurRemoteEndPoint(std::string& sIP, GE::Uint32& uPort) { curConnect->RemoteEndPoint(sIP, uPort); }
 
 	// Boost ASIO
 	boost::asio::io_service&		IOS() { return ios; }
 
 	// DebugInfo
-	std::vector<GE_NetInfo> GetDebugInfoList_L();
+	// std::vector<GE_NetInfo> GetDebugInfoList_L();
 
 private:
 	/*
 	下面函数的后缀_N标识该函数只能在网络线程程调用，否则会有线程问题。
 	*/
 	// 异步接收连接
-	void AsyncAccept_N();
-	void HandleAccept_N(GE_NetConnect::ConnectSharedPtr spConnect, const boost::system::error_code& error);
-	void ForceShutdownIllegalConnect_us();
-	void AsyncSendFun();
-	void BoostAsioRun();
-	void DebugRun();
-	void AddOutput_N(const char* pS, GE::Int64 p1);
-	void AddOutput_N(const char* pS, GE::Int64 p1, GE::Int64 p2);
-	void AddOutput_N(const char* pS, const char* p1);
-	void PrintOutPut_L();
+
+	//void AsyncAccept_N();
+	//void HandleAccept_N(boost::shared_ptr<GE_NetConnect> spConnect, const boost::system::error_code& error);
+	//void ForceShutdownIllegalConnect_us();
+	//void AsyncSendFun();
+	//void BoostAsioRun();
+	//void DebugRun();
+	//void AddOutput_N(const char* pS, GE::Int64 p1);
+	//void AddOutput_N(const char* pS, GE::Int64 p1, GE::Int64 p2);
+	//void AddOutput_N(const char* pS, const char* p1);
+	//void PrintOutPut_L();
 
 private:
 	// 连接管理器、线程锁
