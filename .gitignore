@@ -1,3 +1,6 @@
+#OutDir
+x64/
+
 # Prerequisites
 *.d
 
