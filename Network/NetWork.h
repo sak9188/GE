@@ -5,6 +5,7 @@
 #include <boost\thread.hpp>
 #include <boost\asio.hpp>
 
+#include "NetStruct.h"
 #include "NetMgr.h"
 
 namespace GE
@@ -21,18 +22,18 @@ namespace GE
 			NetWork(GE::Uint32 maxConnect, GE::Uint16 thread);
 			~NetWork(void);
 
-			//// 监听一个端口
-			//bool Listen(GE::Uint32 port);
-			//
-			//// 开始工作
-			//void Start();
-			//
-			//// 停止
-			//void Stop();
+			// 监听一个端口
+			bool Listen(GE::Uint32 port);
+			
+			// 开始工作
+			void Start();
+			
+			// 停止
+			void Stop();
 
-			//// 连接一个远程ip、端口
-			//bool Connect(const char* sIP, GE::Uint32 uPort, GE::Uint32& uSessionID, GE::Uint16 uWho, void* pBindPoint, ConnectParam* pCP = NULL);
-			//
+			// 连接一个远程ip、端口
+			bool Connect(const char* sIP, GE::Uint32 uPort, GE::Uint32& uSessionID, GE::Uint16 uWho, void* pBindPoint, GE::Net::ConnectParam* pCP = NULL);
+			
 			//// 断开一个连接
 			//void DisConnect(GE::Uint32 uSessionID);
 			//
